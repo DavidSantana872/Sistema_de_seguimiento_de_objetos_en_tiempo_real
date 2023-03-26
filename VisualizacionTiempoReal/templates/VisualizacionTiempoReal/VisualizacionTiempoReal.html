@@ -17,6 +17,9 @@
         const chatSocket = new WebSocket(url)
         chatSocket.onmessage = function(e) {
             let data = JSON.parse(e.data)
+
+            // tipo de imagen recibida 
+
             if (data.type == 'img') {
                 var img = document.getElementById('imagen-real');
                 img.src = 'data:image/jpeg;base64,' + data.message;

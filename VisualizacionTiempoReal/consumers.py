@@ -3,6 +3,7 @@ from channels.generic.websocket import WebsocketConsumer
 import cv2
 import base64
 import numpy as np 
+
 class VisualizacionTiempoRealConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
@@ -11,7 +12,7 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
             'message': 'you are now connected'
         }))
         # captura de video 
-        url = "http://192.168.1.135:8080/video"
+        url = "ip de video "
         captura = cv2.VideoCapture(url)
 
         #rango de colores 
@@ -58,7 +59,7 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
                 if len(contours) > 0:
                     cnt = max(contours, key=cv2.contourArea)
                     x, y, w, h = cv2.boundingRect(cnt)
-                # print(w,h)
+                   #print(w,h)
                     cv2.rectangle(imagen, (x, y), (x + w, y + h), (0, 0, 0), 2)
                     img_encoded = cv2.imencode('.jpg', imagen)[1]
                     # Convertir la imagen codificada en bytes a una cadena base64 que se puede incrustar en la página web
