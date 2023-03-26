@@ -1,0 +1,40 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar</title>
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+    <script src="{%static 'js/funcionalidades.js'%}"></script>
+
+</head>
+
+<body>
+    <section class="contenedor_principal">
+        <nav class="bar_nav">
+            <div class="element1_nav">
+                <p class="title_nav">
+                    <a href="{%url 'home'%}">
+                        System <span class="second_title">SSOTR</span>
+                    </a>
+                </p>
+            </div>
+            <div class="element1_nav">
+                <a class="element1_nav btn_nav" href="#">
+                    <img class="icono" src="{%static 'img/icon_view.svg'%}" alt="">
+                    <p>Visualizacion en tiempo real</p>
+                </a>
+            </div>
+        </nav>
+        <section class="section_index">
+            <a href="{%url 'VisualizacionTiempoReal:VisualizacionTiempoReal'%}" class="btn_Start">
+               INICIAR PROCESO
+            </a>
+        </section>
+    </section>
+</body>
+
+</html>

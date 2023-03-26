@@ -1,0 +1,83 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prioridad</title>
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+    <script src="{%static 'js/funcionalidades.js'%}"></script>
+
+</head>
+
+<body>
+    <section class="contenedor_principal">
+        <nav class="bar_nav">
+            <div class="element1_nav">
+                <p class="title_nav">
+                    <a href="{%url 'home'%}">
+                        System <span class="second_title">SSOTR</span>
+                    </a>
+                </p>
+            </div>
+            <div class="element1_nav">
+                <a class="element1_nav btn_nav" href="#">
+                    <img class="icono" src="{%static 'img/icon_view.svg'%}" alt="">
+                    <p>Visualizacion en tiempo real</p>
+                </a>
+            </div>
+        </nav>
+        <section class="section_index">
+            <p class="title_section">PRIORIDAD DE PAQUETE SEGÚN SU COLOR</p>
+            <form method="POST" action="{%url 'DestinoPaquete'%}">
+                <div class="box_selector">
+                    {% csrf_token %}
+                    <div class="selector_box">
+                        <select class="select1" name="select1" id="first_select" onchange="disableSelectedOption(this)">
+                            <option value="1" class="option_Select_text">1</option>
+                            <option value="2" class="option_Select_text">2</option>
+                            <option value="3" class="option_Select_text">3</option>
+                            <option value="0" class="option_Select_text" selected disabled></option>
+                        </select>
+                        <div class="bloquear">
+
+                        </div>
+                    </div>
+                    <div class="selector_box">
+                        <select class="select2" name="select2" onchange="disableSelectedOption(this)">
+                            <option value="1" class="option_Select_text">1</option>
+                            <option value="2" class="option_Select_text">2</option>
+                            <option value="3" class="option_Select_text">3</option>
+                            <option value="0" class="option_Select_text" selected disabled></option>
+                        </select>
+                        <div class="bloquear">
+
+                        </div>
+                    </div>
+                    <div class="selector_box">
+                        <select class="select3" name="select3" onchange="disableSelectedOption(this)">
+                            <option value="1" class="option_Select_text">1</option>
+                            <option value="2" class="option_Select_text">2</option>
+                            <option value="3" class="option_Select_text">3</option>
+                            <option value="0" class="option_Select_text" selected disabled></option>
+                        </select>
+                        <div class="bloquear">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="information">
+                    <p>Segun el numero que se asigne a cada color este tomaran la prioridad de ser llevados primero</p>
+                </div>
+                <button type="submit" class="btn_index">
+                    CONTINUAR
+                </button>
+
+            </form>
+        </section>
+    </section>
+</body>
+
+</html>

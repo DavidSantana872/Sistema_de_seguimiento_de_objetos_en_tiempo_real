@@ -1,0 +1,87 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VTR</title>
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+
+</head>
+
+<body>
+    <script type="text/javascript">
+        let url = `ws://${window.location.host}/ws/socket-server/`
+        const chatSocket = new WebSocket(url)
+        chatSocket.onmessage = function(e) {
+            let data = JSON.parse(e.data)
+            if (data.type == 'img') {
+                var img = document.getElementById('imagen-real');
+                img.src = 'data:image/jpeg;base64,' + data.message;
+            } else if (data.type == 'img_mascara') {
+                var img = document.getElementById('imagen-grises');
+                img.src = 'data:image/jpeg;base64,' + data.message;
+            } else {
+                var img = document.getElementById('imagen-procesada');
+                img.src = 'data:image/jpeg;base64,' + data.message;
+            }
+
+        }
+    </script>
+    <section class="contenedor_principal">
+        <nav class="bar_nav">
+            <div class="element1_nav">
+                <p class="title_nav">
+                    <a href="{%url 'home'%}">
+                        System <span class="second_title">SSOTR</span>
+                    </a>
+                </p>
+            </div>
+            <div class="element1_nav">
+                <p class="element1_nav btn_nav texto_nav">
+                    <img class="icono" src="{%static 'img/icon_view.svg'%}" alt="">
+                    <p>Datos En Tiempo Real</p>
+                </p>
+            </div>
+        </nav>
+        <section class="VisualizacionBox">
+            <div class="block_1">
+                <p class="title_vision">IMAGEN PROCESADA</p>
+                <img class="imagen_procesada" id="imagen-procesada">
+
+                </img>
+            </div>
+            <div class=" block_2 ">
+                <div class="camaras ">
+                    <div>
+                        <p class="title_vision ">ESCALA GRISES</p>
+                        <img class="EscalaGrises " id="imagen-grises"></img>
+                    </div>
+                    <div>
+                        <p class="title_vision ">IMAGEN REAL</p>
+                        <img class="ImagenReal " id="imagen-real"></img>
+                    </div>
+                </div>
+                <div class="datos_img ">
+                    <p class="position_datos ">Posicion: X{}, Y{}</p>
+                    <div class=" block_id ">
+                        <div class="block_ ">
+                            <p>COLOR DETECTADO</p>
+                            <div class="color_block "></div>
+                            <p>name</p>
+                        </div>
+                        <div class="block_ ">
+                            <p>COLOR DESTINO FINAL</p>
+                            <div class="color_block "></div>
+                            <p>name</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</body>
+
+</html>
