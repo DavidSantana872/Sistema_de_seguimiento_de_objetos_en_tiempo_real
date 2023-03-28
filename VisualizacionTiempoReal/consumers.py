@@ -89,7 +89,7 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
             'message': 'you are now connected'
         }))
         # captura de video 
-        url = "http://192.168.1.135:8080/video"
+        url = ""
         captura = cv2.VideoCapture(url)
         # amarillo verde rojo 
        
