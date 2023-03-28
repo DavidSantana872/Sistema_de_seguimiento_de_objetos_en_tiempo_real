@@ -20,15 +20,40 @@
 
             // tipo de imagen recibida 
 
-            if (data.type == 'img') {
+            if (data.type === 'img') {
                 var img = document.getElementById('imagen-real');
                 img.src = 'data:image/jpeg;base64,' + data.message;
-            } else if (data.type == 'img_mascara') {
+            } else if (data.type === 'img_mascara') {
                 var img = document.getElementById('imagen-grises');
                 img.src = 'data:image/jpeg;base64,' + data.message;
             } else {
                 var img = document.getElementById('imagen-procesada');
                 img.src = 'data:image/jpeg;base64,' + data.message;
+            }
+            // color detectado y ruta
+            if (data.type === 'color_detectando') {
+                if (data.message === "A") {
+                    let elemento = document.getElementById("color_detectado_div");
+                    elemento.style.backgroundColor = "yellow";
+                } else if (data.message === "R") {
+                    let elemento = document.getElementById("color_detectado_div");
+                    elemento.style.backgroundColor = "red";
+                } else {
+                    let elemento = document.getElementById("color_detectado_div");
+                    elemento.style.backgroundColor = "green";
+                }
+            }
+            if (data.type === 'ColorRuta') {
+                if (data.message === "A") {
+                    let elemento = document.getElementById("color_ruta_div");
+                    elemento.style.backgroundColor = "yellow";
+                } else if (data.message === "R") {
+                    let elemento = document.getElementById("color_ruta_div");
+                    elemento.style.backgroundColor = "red";
+                } else {
+                    let elemento = document.getElementById("color_ruta_div");
+                    elemento.style.backgroundColor = "green";
+                }
             }
 
         }
@@ -72,12 +97,12 @@
                     <div class=" block_id ">
                         <div class="block_ ">
                             <p>COLOR DETECTADO</p>
-                            <div class="color_block "></div>
+                            <div class="color_block " id="color_detectado_div"></div>
                             <p>name</p>
                         </div>
                         <div class="block_ ">
                             <p>COLOR DESTINO FINAL</p>
-                            <div class="color_block "></div>
+                            <div class="color_block " id="color_ruta_div"></div>
                             <p>name</p>
                         </div>
                     </div>

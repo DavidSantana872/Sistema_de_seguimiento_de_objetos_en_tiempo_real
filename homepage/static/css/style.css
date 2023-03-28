@@ -7,7 +7,7 @@
     --white_color: #FFFFFF;
     --titlte_color: #DEE3EC;
     --color_transparent: #ffffff00;
-    --color_verde: #14FF00;
+    --color_verde: rgb(20, 255, 0);
     --color_rojo: #FF0000;
     --color_amarillo: #FFE81C;
 }
@@ -21,10 +21,6 @@ body {
     width: 100vw;
     height: 100vh;
     font-family: 'Roboto', sans-serif;
-}
-
-.color_block {
-    background-color: #14FF00;
 }
 
 body {
@@ -295,6 +291,7 @@ form {
     width: 25px;
     border: solid var(--gray_color) 1px;
     display: flex;
+    background-color: var(--color_base);
 }
 
 .block_ {
