@@ -8,18 +8,18 @@
   para controlar los motores y avanzar siguiendo la línea. El software utilizado incluirá OpenCV para la detección 
   de la línea y Django para la visualización en tiempo real del video y el control del robot a través de una interfaz web.
 </p>
-<h1>
+<h2>
   Tecnologías, lenguajes y herramientas utilizados en el proyecto
-</h1>
-<h1>
+</h2>
+<h2>
   Instrucciones para instalar y ejecutar
-</h1>  
-<h1> 
+</h2>  
+<h2> 
   Estructura código 
-</h1>
-<h1>
+</h2>
+<h2>
   Descripción de los algoritmos y técnicas utilizadas
-</h1>
-<h1>
+</h2>
+<h2>
   Funcionamiento
-</h1>
+</h2>
