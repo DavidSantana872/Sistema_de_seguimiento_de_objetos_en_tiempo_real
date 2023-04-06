@@ -9,7 +9,7 @@
   de la línea y Django para la visualización en tiempo real del video y el control del robot a través de una interfaz web.
 </p>
 <h2>
-  Tecnologías, lenguajes y herramientas utilizados en el proyecto
+  Tecnologías, lenguajes y herramientas utilizados 
 </h2>
 <h2>
   Instrucciones para instalar y ejecutar
