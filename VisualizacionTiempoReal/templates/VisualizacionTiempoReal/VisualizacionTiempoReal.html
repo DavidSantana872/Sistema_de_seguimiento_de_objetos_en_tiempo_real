@@ -27,7 +27,7 @@
             } else if (data.type === 'img_mascara') {
                 var img = document.getElementById('imagen-grises');
                 img.src = 'data:image/jpeg;base64,' + data.message;
-            } else {
+            } else if (data.type === 'img_procesada') {
                 var img = document.getElementById('imagen-procesada');
                 img.src = 'data:image/jpeg;base64,' + data.message;
             }

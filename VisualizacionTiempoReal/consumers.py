@@ -7,87 +7,106 @@ from homepage import views
 import serial
 
 # timeout = 1 esto significa que el se espera 1 segundo
-bluetooth = serial.Serial('dev/tty.HC-05-DevB', 9600, timeout=1)
+"""bluetooth = serial.Serial('dev/tty.HC-05-DevB', 9600, timeout=1)"""
 
 class VisualizacionTiempoRealConsumer(WebsocketConsumer):
-    def Listo_Deteccion_Ruta():
+    """def Listo_Deteccion_Ruta():
         respuesta = "BusquedaRuta"
         response_arduino = bluetooth.readline().decode().rstrip()
         while (response_arduino != respuesta):
             response_arduino = bluetooth.readline().decode().rstrip()
             if response_arduino == respuesta:
                 break
-
+    """
     def Eleccion_paquete(self, captura, lower_color, upper_color):
-        i = 0
+        i = 0 
+        # cargar dimensiones de la imagen 
+        ret, imagen = captura.read()
+        w = imagen.shape[1]
+
+        # seccionamiento de la imagen 
+        IZQUIERDA = [0.0, (w/3)]
+
+        CENTRO = [(IZQUIERDA[1] + 1), ((IZQUIERDA[1] + 1) * 2)]
+
+        DERECHA = [(CENTRO[1] + 1), (w)]
+
         while(captura.isOpened()):
+
             ret, imagen = captura.read()
+            
             if ret == True:
+
+                # cargar imagen original 
+
                 img_encoded = cv2.imencode('.jpg', imagen)[1]
-                # Convertir la imagen codificada en bytes a una cadena base64 que se puede incrustar en la página web
                 img_base64 = base64.b64encode(img_encoded).decode('utf-8')
-                
-                # Enviar por el socket la imagen original
                 self.send(text_data=json.dumps({
                     'type': 'img',
                     'message': img_base64
                 }))
+
+
+                # Cargar imagen a escala de grises 
+
                 hsv = cv2.cvtColor(imagen, cv2.COLOR_BGR2HSV)
                 mask = cv2.inRange(hsv, lower_color, upper_color)
-                # quitar ruido 
-                kernel = np.ones((15,15),np.uint8)
-                mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-                # enviar imagen en mascara de grises 
-                img_encoded = cv2.imencode('.jpg', mask)[1]
-                # Convertir la imagen codificada en bytes a una cadena base64 que se puede incrustar en la página web
+                
+                
+                # Eliminar ruido 
+                # Aplicar filtro Gaussiano y morphologyex
+
+                img_gaussian = cv2.GaussianBlur(mask, (5,5), 0)
+                kernel = np.ones((5,5),np.uint8)
+                img_morph = cv2.morphologyEx(img_gaussian, cv2.MORPH_OPEN, kernel)
+                #img_morph = cv2.morphologyEx(img_morph, cv2.MORPH_CLOSE, kernel)
+                img_encoded = cv2.imencode('.jpg', img_morph)[1]
                 img_base64 = base64.b64encode(img_encoded).decode('utf-8')
                 self.send(text_data=json.dumps({
-                    'type': 'img_mascara',
-                    'message': img_base64
-                }))
+                        'type': 'img_mascara',
+                        'message': img_base64
+                    }))
+                
+
                 # Encontrar contornos
+
                 contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
                 # Dibujar un rectángulo alrededor del contorno de mayor área
+
                 if len(contours) > 0:
                     cnt = max(contours, key=cv2.contourArea)
                     x, y, w, h = cv2.boundingRect(cnt)
-                   
-                   # Deteccion de posicion del paquete 
-
-                    IZQUIERDA = [0, w/3]
-                    CENTRO = [(IZQUIERDA[1] + 1), ((IZQUIERDA[1] + 1) * 2)]
-                    DERECHA = [(CENTRO[1] + 1), w]
 
                     # Identificar posicion del paquete 
 
-                    if(x >= IZQUIERDA[0] and x <= IZQUIERDA[1]):
+                    if((x) in range(int(IZQUIERDA[0]), int(IZQUIERDA[1]))):
                         print("paquete detectado a la izquierda")
                         posicion = "Izquierda"
         
 
-                    elif(x >= IZQUIERDA[0] and x <= IZQUIERDA[1]):
-                        print("paquete detectado a la izquierda")
-                        posicion = "Centro"
-
-                    elif(x >= IZQUIERDA[0] and x <= IZQUIERDA[1]):
-                        print("paquete detectado a la izquierda")
+                    elif((x) in range(int(DERECHA[0]), int(DERECHA[1]))):
+                        print("paquete detectado a la DERECHA")
                         posicion = "Derecha"
+
+                    elif((x) in range(int(CENTRO[0]), int(CENTRO[1]))):
+                        print("paquete detectado aL CENTRO")
+                        posicion = "Centro"
                     
+                    # rectangulo sobre el elemento detectado 
                     cv2.rectangle(imagen, (x, y), (x + w, y + h), (20, 255,0), 2)
                     cv2.putText(imagen, f'(Detectado)', (x, y-10), cv2.FONT_HERSHEY_DUPLEX, 1, (20, 255, 0), 2)
                     img_encoded = cv2.imencode('.jpg', imagen)[1]
-                    # Convertir la imagen codificada en bytes a una cadena base64 que se puede incrustar en la página web
                     img_base64 = base64.b64encode(img_encoded).decode('utf-8')
                     self.send(text_data=json.dumps({
                         'type': 'img_procesada',
-                        'color' : upper_color
+                        'message' : img_base64
                     }))
 
-                    # Control cantidade vueltas para el analisis de los frames 
-                    i = 0 + 1
+
 
                     # por precision al frame numero 20 se enviar la señal al arduino 
-                    if(i == 20):
+                    """if(i == 20):
                         print(f"El paquete se encuentra en {posicion}")
                         # Enviar al serial(ARDUINO) la posicion 
                         bluetooth.write(posicion)
@@ -98,9 +117,13 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
                             response = bluetooth.readline().decode().rstrip()
                             if response == "OK":
                                 break
-                        
+                    """    
                     # Mostrar las coordenadas del rectángulo sobre la imagen original
                     #cv2.putText(imagen, f'(VERDE)', (x, y-10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), 2)
+                    #i = i + 1
+
+        
+               
     def Seguimiento_Ruta(self, captura, lower_color, upper_color):
         while(captura.isOpened()):
             ret, imagen = captura.read()
@@ -141,7 +164,7 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
                     img_base64 = base64.b64encode(img_encoded).decode('utf-8')
                     self.send(text_data=json.dumps({
                         'type': 'img_procesada',
-                        'color' : upper_color
+                        'message' : img_base64
                     }))
 
     
@@ -187,7 +210,7 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
             'message': 'you are now connected'
         }))
         # captura de video 
-        url = ""
+        url = "http://192.168.1.135:8080/video"
         captura = cv2.VideoCapture(url)
         # amarillo verde rojo 
        
@@ -212,9 +235,9 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
 
                 # hasta recibir una respuesta del arduino que se encuentra en poscion para busqueda de ruta
 
-                self.Listo_Deteccion_Ruta()
+                #self.Listo_Deteccion_Ruta()
 
-                # se hace la busqueda de ruta 
+                # busqueda de ruta 
                 
                 self.Ruta_destino(color_ruta, captura)
 
@@ -243,15 +266,3 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
                 self.Eleccion_paquete(captura, lower_red, upper_red)
                 
             i = i + 1
-        
-
-        
-        
-        
-        
-
-        
-            
-                
-
-
