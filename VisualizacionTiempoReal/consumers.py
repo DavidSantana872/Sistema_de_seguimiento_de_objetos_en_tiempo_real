@@ -78,19 +78,24 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
                     cnt = max(contours, key=cv2.contourArea)
                     x, y, w, h = cv2.boundingRect(cnt)
 
+                    # centroide de figura 
+                    centroid_x = x + w//2
+                    centroid_y = y + h//2
+                    cv2.circle(imagen, (centroid_x, centroid_y), 10, (0,255,0), -1)
+                    cv2.line(imagen, (0, centroid_y), (img_morph.shape[1], centroid_y), (0,255,0), 1)
+                    cv2.line(imagen, (centroid_x, 0), (centroid_x, imagen.shape[0]), (0,255,0), 1)
+                    
                     # Identificar posicion del paquete 
 
-                    if((x) in range(int(IZQUIERDA[0]), int(IZQUIERDA[1]))):
-                        print("paquete detectado a la izquierda")
+                    if((centroid_x) in range(int(IZQUIERDA[0]), int(IZQUIERDA[1]))):
+                      
                         posicion = "Izquierda"
         
 
-                    elif((x) in range(int(DERECHA[0]), int(DERECHA[1]))):
-                        print("paquete detectado a la DERECHA")
+                    elif((centroid_x) in range(int(DERECHA[0]), int(DERECHA[1]))):
                         posicion = "Derecha"
 
-                    elif((x) in range(int(CENTRO[0]), int(CENTRO[1]))):
-                        print("paquete detectado aL CENTRO")
+                    elif((centroid_x) in range(int(CENTRO[0]), int(CENTRO[1]))):
                         posicion = "Centro"
                     
                     # rectangulo sobre el elemento detectado 
@@ -125,49 +130,8 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
         
                
     def Seguimiento_Ruta(self, captura, lower_color, upper_color):
-        while(captura.isOpened()):
-            ret, imagen = captura.read()
-            if ret == True:
-                img_encoded = cv2.imencode('.jpg', imagen)[1]
-                # Convertir la imagen codificada en bytes a una cadena base64 que se puede incrustar en la página web
-                img_base64 = base64.b64encode(img_encoded).decode('utf-8')
-                
-                # Enviar por el socket la imagen original
-                self.send(text_data=json.dumps({
-                    'type': 'img',
-                    'message': img_base64
-                }))
-                hsv = cv2.cvtColor(imagen, cv2.COLOR_BGR2HSV)
-                mask = cv2.inRange(hsv, lower_color, upper_color)
-                # quitar ruido 
-                kernel = np.ones((15,15),np.uint8)
-                mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-                # enviar imagen en mascara de grises 
-                img_encoded = cv2.imencode('.jpg', mask)[1]
-                # Convertir la imagen codificada en bytes a una cadena base64 que se puede incrustar en la página web
-                img_base64 = base64.b64encode(img_encoded).decode('utf-8')
-                self.send(text_data=json.dumps({
-                    'type': 'img_mascara',
-                    'message': img_base64
-                }))
-                # Encontrar contornos
-                contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                # Dibujar un rectángulo alrededor del contorno de mayor área
-                if len(contours) > 0:
-                    cnt = max(contours, key=cv2.contourArea)
-                    x, y, w, h = cv2.boundingRect(cnt)
-                   
-                    cv2.rectangle(imagen, (x, y), (x + w, y + h), (20, 255,0), 2)
-                    cv2.putText(imagen, f'(Detectado)', (x, y-10), cv2.FONT_HERSHEY_DUPLEX, 1, (20, 255, 0), 2)
-                    img_encoded = cv2.imencode('.jpg', imagen)[1]
-                    # Convertir la imagen codificada en bytes a una cadena base64 que se puede incrustar en la página web
-                    img_base64 = base64.b64encode(img_encoded).decode('utf-8')
-                    self.send(text_data=json.dumps({
-                        'type': 'img_procesada',
-                        'message' : img_base64
-                    }))
+        pass
 
-    
     
     def Ruta_destino(self, ruta_color, captura):
         # ruta_color es el numero de la prioridad 
@@ -210,7 +174,8 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
             'message': 'you are now connected'
         }))
         # captura de video 
-        url = "http://192.168.1.135:8080/video"
+        # 38 cm de distancia aproximadamente
+        url = "http://192.168.43.43:8080/video"
         captura = cv2.VideoCapture(url)
         # amarillo verde rojo 
        
