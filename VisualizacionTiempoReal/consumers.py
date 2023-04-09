@@ -18,6 +18,10 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
             if response_arduino == respuesta:
                 break
     """
+    def compresion_img():
+        pass
+    def send_img_socked(TYPE, IMG):
+        pass
     def Eleccion_paquete(self, captura, lower_color, upper_color):
         i = 0 
         # cargar dimensiones de la imagen 
@@ -77,8 +81,6 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
                 if len(contours) > 0:
                     cnt = max(contours, key=cv2.contourArea)
                     x, y, w, h = cv2.boundingRect(cnt)
-
-                    # centroide de figura 
                     centroid_x = x + w//2
                     centroid_y = y + h//2
                     cv2.circle(imagen, (centroid_x, centroid_y), 10, (0,255,0), -1)
@@ -88,7 +90,6 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
                     # Identificar posicion del paquete 
 
                     if((centroid_x) in range(int(IZQUIERDA[0]), int(IZQUIERDA[1]))):
-                      
                         posicion = "Izquierda"
         
 
@@ -130,8 +131,42 @@ class VisualizacionTiempoRealConsumer(WebsocketConsumer):
         
                
     def Seguimiento_Ruta(self, captura, lower_color, upper_color):
-        pass
+        # AREA DE RECONOCIMIENTO 
+        area_pts = np.array([[22,699],[395, 0],[403, 0], [578,699]])
+        
+        i = 0 
+        # cargar dimensiones de la imagen 
 
+        
+        while(captura.isOpened()):
+
+            ret, imagen = captura.read()
+            mask = np.zeros(imagen.shape[:2], np.uint8)
+            pts = np.array([[22,699],[395, 0],[403, 0], [578,699]], np.int32)
+            cv2.fillPoly(mask, [pts], (255, 255, 255))
+
+            
+            # Aplicar la máscara a la imagen original
+            masked_img = cv2.bitwise_and(imagen, imagen, mask=mask)
+            mask = cv2.inRange(masked_img, lower_color, upper_color)
+            cv2.drawContours(imagen, [pts], -1, (0,255, 0), 2)
+            # Encontrar los contornos en la máscara
+            contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+            if len(contours) > 0 :
+                # Buscar el contorno más grande
+                max_contour = max(contours, key=cv2.contourArea)
+                # Dibujar un rectángulo alrededor del contorno en la imagen original
+                x,y,w,h = cv2.boundingRect(max_contour)
+                centroid_x = x + w//2
+                centroid_y = y + h//2
+                cv2.circle(imagen, (centroid_x, centroid_y), 10, (0,255,0), -1)
+                cv2.line(imagen, (0, centroid_y), (imagen.shape[1], centroid_y), (0,255,0), 1)
+                cv2.line(imagen, (centroid_x, 0), (centroid_x, imagen.shape[0]), (0,255,0), 1) 
+                cv2.rectangle(imagen, (x,y), (x+w,y+h), (0,255,0), 2)
+           
+
+                
     
     def Ruta_destino(self, ruta_color, captura):
         # ruta_color es el numero de la prioridad 
