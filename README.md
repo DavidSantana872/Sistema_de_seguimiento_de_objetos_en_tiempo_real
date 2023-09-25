@@ -9,17 +9,17 @@
   de la línea y Django para la visualización en tiempo real del video y el control del robot a través de una interfaz web.
 </p>
 <h2>
-  Tecnologías, lenguajes y herramientas utilizados 
+  Recomendaciones
 </h2>
-<h2>
-  Instrucciones para instalar y ejecutar
-</h2>  
-<h2> 
-  Estructura código 
-</h2>
-<h2>
-  Descripción de los algoritmos y técnicas utilizadas
-</h2>
-<h2>
-  Funcionamiento
-</h2>
+<h3>
+  Conexión de la Cámara IP al Teléfono Móvil: 
+</h3>
+<p>
+    Asegúrate de que la cámara IP esté conectada y encendida y la ip este correctamente en la interfaz web. 
+</p>
+<h3>
+  Configuración de la Comunicación Bluetooth: 
+</h3>
+<p>
+    Asegúrate de que el módulo Bluetooth esté conectado correctamente al Arduino y tenga comunicacion con la interfaz web.
+</p>
